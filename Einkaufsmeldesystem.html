@@ -1,0 +1,929 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Einkaufmeldesystem</title>
+    <style>
+        /* Hier beginnt der Inhalt deiner style.css Datei - direkt eingebettet */
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+        /*  Globale Stile und Reset */
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            background-color: #121212; /*  Dunkleres Hintergrund-Schwarz */
+            color: #e0e0e0; /*  Hellgrau für bessere Lesbarkeit auf dunklem Grund */
+            line-height: 1.6;
+            overflow-x: hidden;
+            animation: fadeIn 1s ease-out forwards;
+            background: linear-gradient(45deg, #0a0a0a, #141414, #1f1f1f, #292929);
+            background-size: 400% 400%;
+            animation: gradientAnimation 60s infinite alternate;
+        }
+
+        @keyframes gradientAnimation {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* HeaderStile */
+        header {
+            background-color: rgba(20, 20, 20, 0.95); /*  Noch etwas dunklerer Header */
+            color: #ffffff;
+            padding: 20px 30px; /*  Mehr horizontaler Padding */
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 3px 6px rgba(0,0,0,0.6); /*  Stärkere Box Shadow für Header */
+            position: relative;
+            border-bottom: 2px solid #2979ff; /*  Hellere, kräftigere Border Bottom Farbe */
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 2.2em; /*  Größere Schrift für Titel */
+            letter-spacing: 0.03em;
+            color: #bbdefb;
+            font-weight: 500; /*  Etwas weniger fett */
+        }
+
+        #admin-header-area {
+            display: flex;
+            align-items: center;
+            position: absolute;
+            top: 20px;
+            right: 30px; /*  Angepasst an Header Padding */
+        }
+
+        header button#admin-login-button, header button#admin-logout-button {
+            background-color: #2979ff; /*  Hellere, modernere Button Farbe */
+            color: #ffffff;
+            padding: 12px 20px; /*  Mehr Padding in Buttons */
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.2s ease; /*  Sanftere Transitions */
+            box-shadow: 0 2px 4px rgba(0,0,0,0.4); /*  Dezentere Box Shadow */
+            margin-left: 15px; /*  Mehr Abstand zwischen Buttons */
+            opacity: 0.9;
+        }
+
+        header button#admin-login-button:hover, header button#admin-logout-button:hover {
+            background-color: #1976d2;
+            transform: translateY(-2px); /*  Leichte Hover-Bewegung nach oben */
+            box-shadow: 0 4px 6px rgba(0,0,0,0.5); /*  Stärkere Shadow bei Hover */
+            opacity: 1;
+        }
+
+
+        #admin-login-form-header {
+            display: none;
+            align-items: center;
+            margin-left: 15px;
+        }
+
+        #admin-login-form-header input[type="text"],
+        #admin-login-form-header input[type="password"] {
+            padding: 10px;
+            margin: 0 8px;
+            border-radius: 5px;
+            border: 1px solid #555;
+            background-color: #333;
+            color: #ffffff;
+            box-shadow: inset 0 1px 3px rgba(0,0,0,0.3);
+            box-sizing: border-box;
+            max-width: 180px; /*  Etwas breiter für Input Felder */
+        }
+
+        #admin-login-form-header button[type="submit"] {
+            background-color: #2979ff;
+            color: #ffffff;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9em;
+            transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.2s ease;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+             opacity: 0.9;
+        }
+
+        #admin-login-form-header button[type="submit"]:hover {
+            background-color: #1976d2;
+            transform: translateY(-1px);
+            box-shadow: 0 3px 5px rgba(0,0,0,0.4);
+            opacity: 1;
+        }
+
+
+        /* Main-Bereich Stile */
+        main {
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            animation: slideUp 1s ease-out forwards;
+            transform: translateY(20px);
+            opacity: 0;
+        }
+
+        @keyframes slideUp {
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        section {
+            background-color: rgba(30, 30, 30, 0.9);
+            color: #ffffff;
+            padding: 30px;
+            margin-bottom: 30px;
+            border-radius: 12px; /*  Rundere Ecken für Sections */
+            box-shadow: 0 8px 16px rgba(0,0,0,0.6); /*  Stärkere Section Shadow */
+            width: 95%;
+            max-width: 900px; /*  Sections etwas breiter */
+            transition: box-shadow 0.3s ease, transform 0.2s ease; /* Sanftere Transitions */
+            backdrop-filter: blur(7px); /*  Stärkerer Blur Effekt */
+            border-left: 2px solid #2979ff; /*  Hellere Border Farbe */
+            border-right: 2px solid #2979ff;
+             box-sizing: border-box;
+        }
+
+        section:hover {
+            box-shadow: 0 10px 20px rgba(0,0,0,0.7); /*  Noch stärkere Shadow bei Section Hover */
+            transform: translateY(-3px); /*  Leichte Bewegung nach oben bei Hover */
+        }
+
+        section h2 {
+            text-align: center;
+            margin-top: 0;
+            color: #ffffff;
+            font-size: 2.5em; /*  Größere Section Überschriften */
+            margin-bottom: 25px;
+            border-bottom: 3px solid #2979ff; /*  Hellere, kräftigere Border Bottom */
+            padding-bottom: 15px; /*  Mehr Padding unter Überschrift */
+            letter-spacing: 0.04em;
+            font-weight: 500; /*  Etwas weniger fett */
+        }
+
+        form label {
+            display: block;
+            margin-bottom: 12px;
+            font-weight: 500;
+            color: #e0e0e0; /*  Hellere Label Farbe */
+            letter-spacing: 0.02em;
+        }
+
+        form input[type="text"],
+        form input[type="password"],
+        form select {
+            width: 100%;
+            padding: 14px;
+            margin-bottom: 25px;
+            border: 1px solid #777; /*  Hellere Border für Input Felder */
+            border-radius: 7px; /*  Rundere Ecken für Input Felder */
+            box-sizing: border-box;
+            background-color: #444; /*  Etwas hellerer Input Feld Hintergrund */
+            color: #ffffff;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.4); /*  Dezentere Input Feld Shadow */
+             max-width: 100%;
+             transition: border-color 0.2s ease, box-shadow 0.2s ease; /* Sanftere Transitions für Focus */
+        }
+
+        form input[type="text"]:focus,
+        form input[type="password"]:focus,
+        form select:focus {
+            outline: none;
+            border-color: #64b5f6;
+            box-shadow: 0 0 8px rgba(100, 181, 246, 0.8); /*  Stärkere Focus Shadow mit hellerer Farbe */
+        }
+
+
+        /* Dringlichkeits-Buttons Styling - Modernisiert */
+        .dringlichkeit-buttons {
+            display: flex;
+            gap: 15px; /*  Mehr Abstand zwischen Buttons */
+            margin-bottom: 30px; /*  Mehr Abstand nach unten */
+            justify-content: space-around;
+             box-sizing: border-box;
+             max-width: 100%;
+        }
+
+        .dringlichkeit-button {
+            padding: 12px 22px; /*  Mehr Padding in Dringlichkeitsbuttons */
+            border: 2px solid #2979ff; /*  Standard Border Farbe */
+            border-radius: 10px; /*  Rundere Ecken */
+            color: #ffffff;
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.5); /*  Dezentere Shadow */
+            font-weight: 500;
+            width: 22%; /*  Etwas breiter */
+            text-align: center;
+            background-color: transparent;
+            opacity: 0.85; /*  Etwas weniger transparent */
+            transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+            font-size: 1em; /*  Größere Schrift in Dringlichkeitsbuttons */
+        }
+
+
+        .dringlichkeit-button:hover {
+            transform: translateY(-2px); /*  Leichte Hover Bewegung nach oben */
+            box-shadow: 0 6px 10px rgba(0, 0, 0, 0.6); /*  Stärkere Shadow bei Hover */
+            background-color: rgba(41, 121, 255, 0.15); /*  Dezent hellblauer Hover Hintergrund */
+            opacity: 1;
+            color: #e0e0e0; /*  Hellere Textfarbe bei Hover */
+            border-color: #42a5f5; /*  Noch hellere Border Farbe bei Hover */
+        }
+
+
+        .dringlichkeit-button.active {
+            transform: translateY(-1px);
+            box-shadow: 0 7px 12px rgba(0, 0, 0, 0.7); /*  Noch stärkere Shadow wenn aktiv */
+            font-weight: 600;
+            background-color: #42a5f5; /*  Hellere aktive Farbe */
+            border-color: #42a5f5;
+            color: #ffffff;
+            opacity: 1;
+        }
+
+
+        .dringlichkeit-button.niedrig {
+            border-color: #66bb6a; /*  Hellere Grün-Töne */
+            color: #66bb6a;
+        }
+
+        .dringlichkeit-button.niedrig:hover, .dringlichkeit-button.niedrig.active {
+             background-color: #66bb6a;
+             border-color: #66bb6a;
+             color: #fff;
+        }
+
+        .dringlichkeit-button.mittel {
+            border-color: #ffca28; /*  Hellere Gelb-Töne */
+            color: #ffca28;
+        }
+
+        .dringlichkeit-button.mittel:hover, .dringlichkeit-button.mittel.active {
+             background-color: #ffca28;
+             border-color: #ffca28;
+             color: #333;
+        }
+
+        .dringlichkeit-button.hoch {
+            border-color: #ffa726; /*  Hellere Orange-Töne */
+            color: #ffa726;
+        }
+
+         .dringlichkeit-button.hoch:hover,  .dringlichkeit-button.hoch.active {
+             background-color: #ffa726;
+             border-color: #ffa726;
+             color: #fff;
+        }
+
+        .dringlichkeit-button.kritisch {
+            border-color: #ef5350; /*  Hellere Rot-Töne */
+            color: #ef5350;
+        }
+
+         .dringlichkeit-button.kritisch:hover, .dringlichkeit-button.kritisch.active {
+             background-color: #ef5350;
+             border-color: #ef5350;
+             color: #fff;
+        }
+
+
+        form select {
+            appearance: none;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            padding-right: 2.5em;
+            background-image: url('data:image/svg+xml;utf8,<svg fill="e0e0e0" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/><path d="M0 0h24v24H0z" fill="none"/></svg>'); /* Hellere Pfeilfarbe */
+            background-repeat: no-repeat;
+            background-position-x: calc(100% - 0.7em);
+            background-position-y: center;
+            border: 1px solid #777;
+            background-color: #444;
+            color: #ffffff;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.4);
+            box-sizing: border-box;
+             max-width: 100%;
+             transition: border-color 0.2s ease, box-shadow 0.2s ease; /* Sanftere Transitions für Focus */
+        }
+
+        form select:focus {
+            outline: none;
+            border-color: #64b5f6;
+            box-shadow: 0 0 8px rgba(100, 181, 246, 0.8);
+        }
+
+
+        form button[type="submit"] {
+            background-color: #42a5f5; /*  Hellere Submit Button Farbe */
+            color: #ffffff;
+            padding: 16px 30px; /*  Mehr Padding im Submit Button */
+            border: none;
+            border-radius: 8px; /*  Rundere Ecken für Submit Button */
+            cursor: pointer;
+            font-size: 1.2em; /*  Größere Schrift im Submit Button */
+            box-shadow: 0 4px 8px rgba(0,0,0,0.5); /*  Dezentere Shadow */
+             opacity: 0.9;
+             display: block;
+             margin: 30px auto 0; /*  Mehr oberer Margin, zentriert */
+             max-width: 300px;
+             text-align: center;
+             transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        form button[type="submit"]:hover {
+            background-color: #2979ff;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.6); /*  Stärkere Shadow bei Submit Button Hover */
+            opacity: 1;
+        }
+
+
+        /* Footer Stile */
+        footer {
+            text-align: center;
+            padding: 25px 0;
+            margin-top: 50px; /*  Mehr Abstand zum Main Content */
+            background-color: rgba(20, 20, 20, 0.95); /*  Noch dunklerer Footer */
+            color: #9e9e9e; /*  Dezentere Footer Textfarbe */
+            border-top: 3px solid #2979ff; /*  Hellere Border Top Farbe */
+            font-size: 0.9em;
+            letter-spacing: 0.02em;
+            animation: footerSlideIn 1s ease-out 1s backwards;
+            transform: translateY(30px);
+            opacity: 0;
+            backdrop-filter: blur(7px); /*  Stärkerer Blur im Footer */
+             box-sizing: border-box;
+             max-width: 100%;
+        }
+
+        @keyframes footerSlideIn {
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+
+        /* Animation für Ticket-Erstellung Bestätigung */
+        @keyframes ticketCreatedAnimation {
+            0% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.2); opacity: 0.8; }
+            100% { transform: scale(1); opacity: 0; }
+        }
+
+        .ticket-created-message {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #66bb6a; /*  Hellere Erfolgsmeldung Farbe */
+            color: white;
+            padding: 15px 30px;
+            border-radius: 7px;
+            z-index: 1000;
+            animation: ticketCreatedAnimation 2s ease-out forwards;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+            pointer-events: none;
+        }
+
+
+        /* Admin Bereich Stile */
+        #admin-bereich, #abgeschlossene-tickets-bereich { /*  Einheitliche Formatierung für Admin Bereiche */
+            margin-top: 40px;
+             box-sizing: border-box;
+             max-width: 100%;
+             background-color: rgba(30, 30, 30, 0.8); /*  Leicht transparenter Admin Bereich Hintergrund */
+             padding: 25px; /*  Einheitliches Padding */
+             border-radius: 12px; /*  Einheitliche Border Radius */
+             box-shadow: 0 6px 12px rgba(0,0,0,0.5); /*  Einheitliche Box Shadow */
+             backdrop-filter: blur(5px); /* Einheitlicher Blur */
+             border-left: 2px solid #2979ff; /* Einheitlicher Border Left Farbe */
+             border-right: 2px solid #2979ff; /* Einheitlicher Border Right Farbe */
+        }
+
+
+        #admin-bereich h2, #abgeschlossene-tickets-bereich h2 { /*  Einheitliche Überschriften Formatierung in Admin Bereichen */
+            text-align: center;
+            margin-top: 0;
+            color: #ffffff;
+            font-size: 2em; /*  Einheitliche Überschrift Größe */
+            margin-bottom: 20px; /*  Einheitlicher Abstand nach unten */
+            border-bottom: 2px solid #2979ff; /*  Einheitliche Border Bottom */
+            padding-bottom: 10px; /* Einheitliches Padding Bottom */
+            letter-spacing: 0.03em;
+            font-weight: 500; /* Einheitliches Font Weight */
+        }
+
+
+        #ticket-liste, #abgeschlossene-ticket-liste {
+            margin-top: 25px;
+             box-sizing: border-box;
+             max-width: 100%;
+        }
+
+
+        #ticket-liste table, #abgeschlossene-ticket-liste table { /*  Einheitliche Tabellen Stile */
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px; /*  Einheitlicher Margin Top */
+            background-color: #3a3a3a; /*  Einheitlicher Tabellen Hintergrund */
+            border-radius: 10px; /*  Einheitlicher Border Radius */
+            overflow: hidden;
+            box-shadow: 0 3px 6px rgba(0,0,0,0.4); /*  Einheitlicher Box Shadow */
+            animation: tableFadeIn 1s ease-out forwards;
+            opacity: 0;
+            transform: translateY(10px);
+             box-sizing: border-box;
+             max-width: 100%;
+        }
+
+
+        @keyframes tableFadeIn {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+
+        #ticket-liste th, #ticket-liste td, #abgeschlossene-ticket-liste th, #abgeschlossene-ticket-liste td { /* Einheitliche Zellen Stile */
+            border: none;
+            padding: 14px 20px; /*  Einheitliches Zellen Padding */
+            text-align: left;
+            color: #ffffff;
+            font-weight: 400;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            border-bottom: 1px solid #555;
+             box-sizing: border-box;
+             max-width: 100%;
+        }
+
+
+        #ticket-liste th, #abgeschlossene-ticket-liste th { /* Einheitliche Header Zellen Stile */
+            background-color: #1a1a1a;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            color: #e0e0e0; /*  Hellere Header Text Farbe */
+             box-sizing: border-box;
+             max-width: 100%;
+        }
+
+
+        #ticket-liste tbody tr, #abgeschlossene-ticket-liste tbody tr { /* Einheitliche Ticket Zeilen Umrandung */
+            border-left: 5px solid transparent;
+            border-right: 5px solid transparent;
+             transition: background-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease; /* Sanftere Transitions */
+        }
+
+
+        #ticket-liste tbody tr.dringlichkeit-niedrig, #abgeschlossene-ticket-liste tbody tr.dringlichkeit-niedrig {
+            border-left-color: #66bb6a;
+            border-right-color: #66bb6a;
+        }
+
+        #ticket-liste tbody tr.dringlichkeit-mittel, #abgeschlossene-ticket-liste tbody tr.dringlichkeit-mittel {
+            border-left-color: #ffca28;
+            border-right-color: #ffca28;
+        }
+
+        #ticket-liste tbody tr.dringlichkeit-hoch, #abgeschlossene-ticket-liste tbody tr.dringlichkeit-hoch {
+            border-left-color: #ffa726;
+            border-right-color: #ffa726;
+        }
+
+        #ticket-liste tbody tr.dringlichkeit-kritisch, #abgeschlossene-ticket-liste tbody tr.dringlichkeit-kritisch {
+            border-left-color: #ef5350;
+            border-right-color: #ef5350;
+        }
+
+
+        #ticket-liste tbody tr:nth-child(even), #abgeschlossene-ticket-liste tbody tr:nth-child(even) { /* Einheitliche gerade Zeilen Farbe */
+            background-color: #404040;
+        }
+
+
+        #ticket-liste tbody tr:hover, #abgeschlossene-ticket-liste tbody tr:hover { /*  Einheitlicher Tabellenzeilen Hover Effekt */
+            background-color: #4a4a4a;
+            transform: translateY(-2px); /*  Leichte Hover Bewegung nach oben */
+            box-shadow: 0 5px 8px rgba(0,0,0,0.5); /*  Dezentere Shadow bei Tabellenzeilen Hover */
+        }
+
+
+        #ticket-liste th.aktion-spalte, #ticket-liste td.aktion-spalte, #abgeschlossene-ticket-liste th.aktion-spalte, #abgeschlossene-ticket-liste td.aktion-spalte { /* Einheitliche Aktionsspalten Stile */
+            white-space: nowrap;
+            width: 150px;
+            overflow: visible;
+            text-overflow: clip;
+            text-align: center;
+            border-bottom: 1px solid #555;
+             box-sizing: border-box;
+             max-width: 100%;
+        }
+
+
+        #ticket-liste button, #abgeschlossene-ticket-liste button { /* Einheitliche Button Stile in Tabellen */
+            background-color: #42a5f5; /*  Hellere Button Farbe */
+            color: #ffffff;
+            padding: 10px 16px; /*  Mehr Padding in Tabellen Buttons */
+            border: none;
+            border-radius: 6px; /*  Rundere Ecken für Tabellen Buttons */
+            cursor: pointer;
+            font-size: 0.9em;
+            opacity: 0.9;
+            transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.2s ease; /* Sanftere Transitions */
+             box-shadow: 0 2px 4px rgba(0,0,0,0.3); /*  Dezentere Shadow für Tabellen Buttons */
+             margin: 3px 5px; /*  Mehr Margin um Tabellen Buttons */
+        }
+
+
+        #ticket-liste button:hover, #abgeschlossene-ticket-liste button:hover { /* Einheitliche Button Hover Stile in Tabellen */
+            opacity: 1;
+            background-color: #2979ff;
+            transform: translateY(-1px); /*  Leichtere Hover Bewegung nach oben */
+            box-shadow: 0 3px 5px rgba(0,0,0,0.4); /*  Dezentere Shadow bei Button Hover */
+        }
+
+
+        #ticket-liste button.fertigstellen-btn, #abgeschlossene-ticket-liste button.fertigstellen-btn {
+            background-color: #66bb6a; /*  Hellere Fertigstellen Button Farbe */
+            color: white;
+             opacity: 0.9;
+        }
+
+
+        #ticket-liste button.fertigstellen-btn:hover, #abgeschlossene-ticket-liste button.fertigstellen-btn:hover {
+            background-color: #4caf50;
+            opacity: 1;
+        }
+
+
+        #ticket-liste button.loeschen-btn, #abgeschlossene-ticket-liste button.loeschen-btn {
+            background-color: #ef5350; /*  Hellere Löschen Button Farbe */
+            color: white;
+             opacity: 0.9;
+        }
+
+        #ticket-liste button.loeschen-btn:hover, #abgeschlossene-ticket-liste button.loeschen-btn:hover {
+            background-color: #f44336;
+            opacity: 1;
+        }
+
+
+        footer {
+            text-align: center;
+            padding: 25px 0;
+            margin-top: 50px;
+            background-color: rgba(20, 20, 20, 0.95);
+            color: #9e9e9e;
+            border-top: 3px solid #2979ff;
+            font-size: 0.9em;
+            letter-spacing: 0.02em;
+            animation: footerSlideIn 1s ease-out 1s backwards;
+            transform: translateY(30px);
+            opacity: 0;
+            backdrop-filter: blur(7px);
+             box-sizing: border-box;
+             max-width: 100%;
+        }
+
+        @keyframes footerSlideIn {
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        /*  Hier endet der Inhalt deiner style.css Datei - direkt eingebettet */
+    </style>
+</head>
+<body>
+    <header>
+        <h1><span role="img" aria-label="Einkaufswagen Emoji">🛒</span> Einkaufmeldesystem</h1>
+        <div id="admin-header-area">
+            <button id="admin-login-button"><span role="img" aria-label="Schlüssel Emoji">🔑</span> Admin Login</button>
+            <button id="admin-logout-button" style="display:none;"><span role="img" aria-label="Logout Emoji">🚪</span> Admin Logout</button>
+            <form id="admin-login-form-header" style="display:none;">
+                <input type="text" id="admin-username" name="admin-username" placeholder="Benutzer" value="admin" required>
+                <input type="password" id="admin-password" name="admin-password" placeholder="Passwort" required>
+                <button type="submit">Login</button>
+            </form>
+        </div>
+    </header>
+
+    <main>
+        <section id="ticket-form">
+            <h2><span role="img" aria-label="Formular Emoji">📝</span> Einkaufsmeldung erstellen</h2>
+            <form id="create-ticket-form">
+                <label for="name">Dein Name:</label>
+                <input type="text" id="name" name="name" required><br><br>
+
+                <label for="produkt">Produktwunsch:</label>
+                <input type="text" id="produkt" name="produkt" required><br><br>
+
+                <label for="abteilung">Abteilung:</label>
+                <select id="abteilung" name="abteilung" required>
+                    <option value="FiCo">FiCo</option>
+                    <option value="Vertrieb">Vertrieb</option>
+                    <option value="Einkauf">Einkauf</option>
+                    <option value="Marketing">Marketing</option>
+                    <option value="Personal">Personal</option>
+                    <option value="IT">IT</option>
+                </select><br><br>
+
+                <label>Dringlichkeit:</label>
+                <div class="dringlichkeit-buttons">
+                    <button type="button" class="dringlichkeit-button niedrig" data-dringlichkeit="Niedrig">Niedrig</button>
+                    <button type="button" class="dringlichkeit-button mittel" data-dringlichkeit="Mittel">Mittel</button>
+                    <button type="button" class="dringlichkeit-button hoch" data-dringlichkeit="Hoch">Hoch</button>
+                    <button type="button" class="dringlichkeit-button kritisch" data-dringlichkeit="Kritisch">Kritisch</button>
+                </div>
+                <input type="hidden" id="dringlichkeit" name="dringlichkeit" value="Niedrig">
+
+                <button type="submit"><span role="img" aria-label="Hinzufügen Emoji">➕</span> Ticket erstellen</button>
+            </form>
+        </section>
+
+        <section id="admin-bereich" style="display:none;">
+            <h2><span role="img" aria-label="Admin Bereich Emoji">⚙️</span> Admin Bereich - Offene Tickets</h2>
+             <div id="ticket-liste">
+            </div>
+        </section>
+
+        <section id="abgeschlossene-tickets-bereich" style="display:none;">
+            <h2><span role="img" aria-label="Abgeschlossene Tickets Emoji">✅</span> Abgeschlossene Tickets</h2>
+             <div id="abgeschlossene-ticket-liste">
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2023 Einkaufmeldesystem <span role="img" aria-label="Copyright Emoji">©️</span></p>
+    </footer>
+
+    <script>
+        /* Hier beginnt der Inhalt deiner script.js Datei - direkt eingebettet */
+        document.addEventListener('DOMContentLoaded', function() {
+            const createTicketForm = document.getElementById('create-ticket-form');
+            const adminLoginFormHeader = document.getElementById('admin-login-form-header');
+            const adminBereichSection = document.getElementById('admin-bereich');
+            const ticketListeDiv = document.getElementById('ticket-liste');
+            const adminLoginButton = document.getElementById('admin-login-button');
+            const dringlichkeitButtons = document.querySelectorAll('.dringlichkeit-button');
+            const dringlichkeitInputHidden = document.getElementById('dringlichkeit');
+            const adminLogoutButton = document.getElementById('admin-logout-button');
+            const abgeschlosseneTicketsBereichSection = document.getElementById('abgeschlossene-tickets-bereich');
+            const abgeschlosseneTicketListeDiv = document.getElementById('abgeschlossene-ticket-liste');
+
+
+            let tickets = JSON.parse(localStorage.getItem('einkaufsTickets')) || [];
+            let isAdminLoggedIn = sessionStorage.getItem('isAdminLoggedIn') === 'true';
+            let ticketCreatedTimeout;
+
+            // Initialisierung
+            if (isAdminLoggedIn) {
+                adminBereichSection.style.display = 'block';
+                abgeschlosseneTicketsBereichSection.style.display = 'block';
+                adminLoginFormHeader.style.display = 'none';
+                adminLoginButton.style.display = 'none';
+                adminLogoutButton.style.display = 'inline-block';
+                zeigeAdminTickets();
+            } else {
+                adminBereichSection.style.display = 'none';
+                abgeschlosseneTicketsBereichSection.style.display = 'none';
+                adminLoginFormHeader.style.display = 'none';
+                adminLoginButton.style.display = 'inline-block';
+                adminLogoutButton.style.display = 'none';
+            }
+
+
+            createTicketForm.addEventListener('submit', function(event) {
+                event.preventDefault();
+                const name = document.getElementById('name').value;
+                const produkt = document.getElementById('produkt').value;
+                const dringlichkeit = dringlichkeitInputHidden.value;
+                const abteilung = document.getElementById('abteilung').value;
+                const status = 'Offen';
+
+                const neuesTicket = { name, produkt, dringlichkeit, abteilung, status };
+                tickets.push(neuesTicket);
+                localStorage.setItem('einkaufsTickets', JSON.stringify(tickets));
+
+                zeigeTicketErstelltMeldung();
+                createTicketForm.reset();
+                dringlichkeitInputHidden.value = 'Niedrig';
+                dringlichkeitButtons.forEach(button => button.classList.remove('active'));
+                dringlichkeitButtons[0].classList.add('active');
+            });
+
+            dringlichkeitButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    dringlichkeitInputHidden.value = this.dataset.dringlichkeit;
+                    dringlichkeitButtons.forEach(btn => btn.classList.remove('active'));
+                    this.classList.add('active');
+                });
+            });
+            dringlichkeitButtons[0].classList.add('active');
+
+
+            adminLoginFormHeader.addEventListener('submit', function(event) {
+                event.preventDefault();
+                const adminUsername = document.getElementById('admin-username').value;
+                const adminPassword = document.getElementById('admin-password').value;
+
+                if (adminUsername === 'admin' && adminPassword === 'Einkauf') {
+                    sessionStorage.setItem('isAdminLoggedIn', 'true');
+                    isAdminLoggedIn = true;
+                    adminBereichSection.style.display = 'block';
+                    abgeschlosseneTicketsBereichSection.style.display = 'block';
+                    adminLoginFormHeader.style.display = 'none';
+                    adminLoginButton.style.display = 'none';
+                    adminLogoutButton.style.display = 'inline-block';
+                    zeigeAdminTickets();
+                    alert('Admin Login erfolgreich!');
+                } else {
+                    alert('Admin Login fehlgeschlagen. Falscher Benutzername oder Passwort.');
+                }
+            });
+
+
+            adminLoginButton.addEventListener('click', function() {
+                adminLoginFormHeader.style.display = adminLoginFormHeader.style.display === 'none' ? 'flex' : 'none';
+                adminBereichSection.style.display = 'none';
+                abgeschlosseneTicketsBereichSection.style.display = 'none';
+            });
+
+            adminLogoutButton.addEventListener('click', function() {
+                sessionStorage.removeItem('isAdminLoggedIn');
+                isAdminLoggedIn = false;
+                adminBereichSection.style.display = 'none';
+                abgeschlosseneTicketsBereichSection.style.display = 'none';
+                ticketListeDiv.innerHTML = '';
+                abgeschlosseneTicketListeDiv.innerHTML = '';
+                adminLoginButton.style.display = 'inline-block';
+                adminLogoutButton.style.display = 'none';
+                zeigeAdminTickets();
+                alert('Admin Logout.');
+            });
+
+
+             function zeigeAdminTickets() {
+                // Leere beide Ticketlisten
+                ticketListeDiv.innerHTML = '';
+                abgeschlosseneTicketListeDiv.innerHTML = '';
+
+                if (tickets.length === 0) {
+                    ticketListeDiv.innerHTML = '<p>Es gibt noch keine offenen Einkaufstickets.</p>';
+                    abgeschlosseneTicketListeDiv.innerHTML = '<p>Es gibt keine abgeschlossenen Einkaufstickets.</p>';
+                    return;
+                }
+
+                // Sortiere Tickets nach Dringlichkeit (Kritisch > Hoch > Mittel > Niedrig)
+                const dringlichkeitSortierung = {"Kritisch": 4, "Hoch": 3, "Mittel": 2, "Niedrig": 1};
+                tickets.sort((a, b) => dringlichkeitSortierung[b.dringlichkeit] - dringlichkeitSortierung[a.dringlichkeit]);
+
+                // Filtere Tickets in offen und abgeschlossen
+                const offeneTickets = tickets.filter(ticket => ticket.status === 'Offen');
+                const abgeschlosseneTickets = tickets.filter(ticket => ticket.status === 'Abgeschlossen');
+
+
+                // Zeige Offene Tickets
+                if (offeneTickets.length > 0) {
+                    const tabelleOffen = erstelleTicketTabelle(offeneTickets, false); // false: nicht für abgeschlossene Tickets
+                    ticketListeDiv.appendChild(tabelleOffen);
+                } else {
+                    ticketListeDiv.innerHTML = '<p>Es gibt keine offenen Einkaufstickets.</p>';
+                }
+
+
+                // Zeige Abgeschlossene Tickets
+                if (abgeschlosseneTickets.length > 0) {
+                    const tabelleAbgeschlossen = erstelleTicketTabelle(abgeschlosseneTickets, true); // true: für abgeschlossene Tickets
+                    abgeschlosseneTicketListeDiv.appendChild(tabelleAbgeschlossen);
+                } else {
+                    abgeschlosseneTicketListeDiv.innerHTML = '<p>Es gibt keine abgeschlossenen Einkaufstickets.</p>';
+                }
+            }
+
+
+            function erstelleTicketTabelle(ticketListe, istAbgeschlossenListe) {
+                const tabelle = document.createElement('table');
+                tabelle.innerHTML = `
+                    <thead>
+                        <tr>
+                            <th>Nr.</th>
+                            <th>Abteilung</th>
+                            <th>Name</th>
+                            <th>Dringlichkeit</th>
+                            <th>Status</th>
+                            <th>Produktwunsch</th>
+                            <th class="aktion-spalte">Aktionen</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                `;
+                const tbody = tabelle.querySelector('tbody');
+
+                ticketListe.forEach((ticket, index) => {
+                    const zeile = tbody.insertRow();
+                    zeile.classList.add(`dringlichkeit-${ticket.dringlichkeit.toLowerCase()}`);
+                    zeile.insertCell().textContent = index + 1;
+                    zeile.insertCell().textContent = ticket.abteilung;
+                    zeile.insertCell().textContent = ticket.name;
+                    zeile.insertCell().textContent = ticket.dringlichkeit;
+                    zeile.insertCell().textContent = ticket.status;
+                    zeile.insertCell().textContent = ticket.produkt; // Produktwunsch als Letztes
+                    const aktionenZelle = zeile.insertCell();
+                    aktionenZelle.classList.add('aktion-spalte');
+
+                    // Fertigstellen Button (nur für offene Tickets)
+                    if (!istAbgeschlossenListe) {
+                        const fertigstellenButton = document.createElement('button');
+                        fertigstellenButton.classList.add('fertigstellen-btn');
+                        fertigstellenButton.textContent = 'Fertigstellen';
+                        fertigstellenButton.onclick = function() {
+                            schliesseTicketAb(tickets.indexOf(ticket));
+                        };
+                        aktionenZelle.appendChild(fertigstellenButton);
+                    }
+
+
+                    const loeschButton = document.createElement('button');
+                    loeschButton.classList.add('loeschen-btn');
+                    loeschButton.textContent = 'Löschen';
+                    loeschButton.onclick = function() {
+                        loescheTicket(tickets.indexOf(ticket));
+                    };
+                    aktionenZelle.appendChild(loeschButton);
+                });
+
+                return tabelle;
+            }
+
+
+             function loescheTicket(ticketIndex) {
+                if (confirm('Möchtest du dieses Ticket wirklich löschen?')) {
+                    // Debugging: Überprüfe den Ticket-Index VOR dem Löschen
+                    console.log("Lösche Ticket Index:", ticketIndex);
+                    if (ticketIndex > -1 && ticketIndex < tickets.length) { // Index-Prüfung hinzugefügt
+                        tickets.splice(ticketIndex, 1);
+                        localStorage.setItem('einkaufsTickets', JSON.stringify(tickets));
+                        zeigeAdminTickets(); // Beide Listen neu laden
+                    } else {
+                        console.error("Ungültiger Ticket Index:", ticketIndex, "Tickets Array Länge:", tickets.length); // Fehlerfall loggen
+                    }
+                }
+            }
+
+
+            function schliesseTicketAb(ticketIndex) {
+                tickets[ticketIndex].status = 'Abgeschlossen';
+                localStorage.setItem('einkaufsTickets', JSON.stringify(tickets));
+                zeigeAdminTickets(); // Beide Listen neu laden
+            }
+
+
+            function zeigeTicketErstelltMeldung() {
+                const messageDiv = document.createElement('div');
+                messageDiv.classList.add('ticket-created-message');
+                messageDiv.textContent = 'Einkaufsticket erfolgreich erstellt!';
+                document.body.appendChild(messageDiv);
+
+                if (ticketCreatedTimeout) {
+                    clearTimeout(ticketCreatedTimeout);
+                }
+                ticketCreatedTimeout = setTimeout(() => {
+                    if (messageDiv.parentNode) {
+                        messageDiv.parentNode.removeChild(messageDiv);
+                    }
+                }, 2000);
+            }
+
+
+             // Admin Tickets initial anzeigen
+            if (isAdminLoggedIn) {
+                zeigeAdminTickets();
+            }
+
+
+        });
+        /* Hier endet der Inhalt deiner script.js Datei - direkt eingebettet */
+    </script>
+</body>
+</html>
